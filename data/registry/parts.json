@@ -30,6 +30,16 @@
     ]
   },
   {
+    "part_id": "fl.thigh.cover",
+    "name": "Front-left thigh motor cover",
+    "kind": "shell",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_hip"
+    ],
+    "spec": "plastic cover over the thigh actuator, 4x M3 screws (sim value)"
+  },
+  {
     "part_id": "fl.calf.motor",
     "name": "Front-left knee actuator",
     "kind": "motor",
@@ -125,6 +135,16 @@
       "B",
       "C"
     ]
+  },
+  {
+    "part_id": "fr.thigh.cover",
+    "name": "Front-right thigh motor cover",
+    "kind": "shell",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_hip"
+    ],
+    "spec": "plastic cover over the thigh actuator, 4x M3 screws (sim value)"
   },
   {
     "part_id": "fr.calf.motor",
@@ -224,6 +244,16 @@
     ]
   },
   {
+    "part_id": "rl.thigh.cover",
+    "name": "Rear-left thigh motor cover",
+    "kind": "shell",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_hip"
+    ],
+    "spec": "plastic cover over the thigh actuator, 4x M3 screws (sim value)"
+  },
+  {
     "part_id": "rl.calf.motor",
     "name": "Rear-left knee actuator",
     "kind": "motor",
@@ -319,6 +349,16 @@
       "B",
       "C"
     ]
+  },
+  {
+    "part_id": "rr.thigh.cover",
+    "name": "Rear-right thigh motor cover",
+    "kind": "shell",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_hip"
+    ],
+    "spec": "plastic cover over the thigh actuator, 4x M3 screws (sim value)"
   },
   {
     "part_id": "rr.calf.motor",

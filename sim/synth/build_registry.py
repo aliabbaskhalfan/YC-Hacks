@@ -84,6 +84,15 @@ def build_parts() -> list[dict]:
                     "supplier_lots": list(SUPPLIER_LOTS),
                 },
                 {
+                    # The thigh motor sits on the hip body, so its cover highlights (and collides in sim) there.
+                    "part_id": f"{leg}.thigh.cover",
+                    "name": f"{leg_name} thigh motor cover",
+                    "kind": "shell",
+                    "parent": f"{leg}.leg",
+                    "mesh_nodes": [f"{node}_hip"],
+                    "spec": "plastic cover over the thigh actuator, 4x M3 screws (sim value)",
+                },
+                {
                     "part_id": f"{leg}.calf.motor",
                     "name": f"{leg_name} knee actuator",
                     "kind": "motor",
