@@ -107,6 +107,16 @@
     "spec": "per-leg cable harness (sim value)"
   },
   {
+    "part_id": "fl.thigh.cover_screws",
+    "name": "Front-left thigh cover screws",
+    "kind": "fastener",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_thigh"
+    ],
+    "spec": "4x M3 x 8 socket cap, 1.0 N-m cross pattern (sim value)"
+  },
+  {
     "part_id": "fr.hip.motor",
     "name": "Front-right hip abduction actuator",
     "kind": "motor",
@@ -212,6 +222,16 @@
       "FR_calf"
     ],
     "spec": "per-leg cable harness (sim value)"
+  },
+  {
+    "part_id": "fr.thigh.cover_screws",
+    "name": "Front-right thigh cover screws",
+    "kind": "fastener",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_thigh"
+    ],
+    "spec": "4x M3 x 8 socket cap, 1.0 N-m cross pattern (sim value)"
   },
   {
     "part_id": "rl.hip.motor",
@@ -321,6 +341,16 @@
     "spec": "per-leg cable harness (sim value)"
   },
   {
+    "part_id": "rl.thigh.cover_screws",
+    "name": "Rear-left thigh cover screws",
+    "kind": "fastener",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_thigh"
+    ],
+    "spec": "4x M3 x 8 socket cap, 1.0 N-m cross pattern (sim value)"
+  },
+  {
     "part_id": "rr.hip.motor",
     "name": "Rear-right hip abduction actuator",
     "kind": "motor",
@@ -426,6 +456,16 @@
       "RR_calf"
     ],
     "spec": "per-leg cable harness (sim value)"
+  },
+  {
+    "part_id": "rr.thigh.cover_screws",
+    "name": "Rear-right thigh cover screws",
+    "kind": "fastener",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_thigh"
+    ],
+    "spec": "4x M3 x 8 socket cap, 1.0 N-m cross pattern (sim value)"
   },
   {
     "part_id": "base.battery",

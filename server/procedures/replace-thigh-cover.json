@@ -92,9 +92,10 @@
     "cover_radius": 0.0482,
     "cover_thickness": 0.0047,
     "housing_thickness": 0.003,
-    "lip_radius": 0.032,
+    "lip_radius": 0.0317,
     "lip_depth": 0.0035,
-    "bolt_circle_radius": 0.0395,
-    "screw_angles_deg": [45, 135, 225, 315]
+    "bolt_circle_radius": 0.043,
+    "bolt_note": "Measured off the STL cover: 8 real bores at ~45 deg spacing on a 43 mm circle. The procedure uses 4 of them, 90 deg apart, so every screw drives through an actual hole in the CAD.",
+    "screw_angles_deg": [20.3, 113.3, 200.1, 288.5]
   }
 }

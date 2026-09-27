@@ -1,0 +1,20 @@
+{
+  "source": "data/cad/UnitreeGo2.stl",
+  "frame": "FR_thigh",
+  "radius": 0.04824,
+  "thickness": 0.0047,
+  "bounds": [
+    [
+      -0.04625,
+      0.0,
+      -0.048235
+    ],
+    [
+      0.04625,
+      0.0047,
+      0.048235
+    ]
+  ],
+  "faces": 8733,
+  "note": "Snapped to the joint axis, inner face zeroed; the viewer mounts it on the Menagerie boss."
+}
