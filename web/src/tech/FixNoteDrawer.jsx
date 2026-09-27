@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { KeyboardIcon, MicIcon, SquareIcon } from "lucide-react";
+import { CheckIcon, KeyboardIcon, MicIcon, SquareIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,7 +43,7 @@ function RecordButton({ rec }) {
         ))}
       </div>
       <p className="font-mono text-sm text-muted-foreground">
-        {recording ? `Recording · ${left}s left · tap to stop` : rec.state === "requesting" ? "Allow the microphone…" : "Tap to record · stops at 15 s"}
+        {recording ? `Recording · ${left}s left` : rec.state === "requesting" ? "Allow the microphone…" : "Tap to record · stops at 15 s"}
       </p>
     </div>
   );
@@ -59,7 +59,7 @@ export function FixNoteDrawer({ open, onOpenChange, container, workOrder, onSubm
       onSubmit({ audio });
     },
   });
-  const showText = typing || rec.state === "error";
+  const showText = typing;
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} container={container}>
@@ -71,7 +71,6 @@ export function FixNoteDrawer({ open, onOpenChange, container, workOrder, onSubm
         <div className="flex flex-col gap-4 px-4">
           {showText ? (
             <>
-              {rec.error && <p className="font-mono text-sm text-warning">{rec.error}</p>}
               <Textarea
                 autoFocus
                 rows={5}
@@ -97,8 +96,12 @@ export function FixNoteDrawer({ open, onOpenChange, container, workOrder, onSubm
             >
               Close work order
             </Button>
+          ) : rec.state === "recording" ? (
+            <Button size="lg" onClick={rec.stop}>
+              <CheckIcon /> Finish
+            </Button>
           ) : (
-            <Button variant="ghost" onClick={() => setTyping(true)} disabled={rec.state === "recording"}>
+            <Button variant="ghost" onClick={() => setTyping(true)}>
               <KeyboardIcon /> Type instead
             </Button>
           )}

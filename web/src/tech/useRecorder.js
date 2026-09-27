@@ -3,12 +3,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const BARS = 28;
 const TYPES = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"];
 
-// Voice note capture: auto-stops at maxMs, exposes a live level waveform, never throws.
+// Voice note capture: auto-stops at maxMs and exposes a level waveform. If the browser has no
+// microphone (or permission is denied) it records a simulated note instead, so the stage flow
+// looks identical; onStop then receives null instead of a Blob.
 export function useRecorder({ maxMs = 15000, onStop }) {
-  const [state, setState] = useState("idle"); // idle | requesting | recording | error
+  const [state, setState] = useState("idle"); // idle | requesting | recording
   const [elapsed, setElapsed] = useState(0);
   const [levels, setLevels] = useState(() => Array(BARS).fill(0));
-  const [error, setError] = useState(null);
   const rec = useRef(null);
   const onStopRef = useRef(onStop);
   onStopRef.current = onStop;
@@ -16,74 +17,81 @@ export function useRecorder({ maxMs = 15000, onStop }) {
   const cleanup = () => {
     const r = rec.current;
     if (!r) return;
-    cancelAnimationFrame(r.raf);
+    clearInterval(r.bars);
     clearInterval(r.timer);
-    r.stream.getTracks().forEach((t) => t.stop());
-    r.audio.close().catch(() => {});
+    r.stream?.getTracks().forEach((t) => t.stop());
+    r.audio?.close().catch(() => {});
     rec.current = null;
+  };
+
+  const finish = (blob) => {
+    cleanup();
+    setState("idle");
+    onStopRef.current?.(blob);
   };
 
   const stop = useCallback(() => {
     const r = rec.current;
-    if (r && r.recorder.state !== "inactive") r.recorder.stop();
+    if (!r) return;
+    if (r.recorder && r.recorder.state !== "inactive") r.recorder.stop();
+    else if (!r.recorder) finish(null);
   }, []);
 
   const start = useCallback(async () => {
     if (rec.current) return;
-    setError(null);
     setState("requesting");
+    const r = { bars: 0, timer: 0 };
+    let sample; // () => level in 0..1
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mimeType = TYPES.find((t) => window.MediaRecorder?.isTypeSupported?.(t));
       const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       const chunks = [];
       recorder.ondataavailable = (e) => e.data.size && chunks.push(e.data);
-      recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
-        cleanup();
-        setState("idle");
-        onStopRef.current?.(blob);
-      };
-
+      recorder.onstop = () => finish(new Blob(chunks, { type: recorder.mimeType || "audio/webm" }));
       const audio = new AudioContext();
       const analyser = audio.createAnalyser();
       analyser.fftSize = 512;
       audio.createMediaStreamSource(stream).connect(analyser);
       const buf = new Uint8Array(analyser.fftSize);
-      const t0 = performance.now();
-      const r = { stream, recorder, audio, raf: 0, timer: 0, lastBar: 0 };
-      rec.current = r;
-
-      const tick = (now) => {
+      sample = () => {
         analyser.getByteTimeDomainData(buf);
         let sum = 0;
         for (const v of buf) sum += ((v - 128) / 128) ** 2;
-        if (now - r.lastBar > 70) {
-          r.lastBar = now;
-          const rms = Math.min(1, Math.sqrt(sum / buf.length) * 4);
-          setLevels((l) => [...l.slice(1), rms]);
-        }
-        r.raf = requestAnimationFrame(tick);
+        return Math.min(1, Math.sqrt(sum / buf.length) * 4);
       };
-      r.raf = requestAnimationFrame(tick);
-      r.timer = setInterval(() => {
-        const ms = performance.now() - t0;
-        setElapsed(Math.min(ms, maxMs));
-        if (ms >= maxMs) stop();
-      }, 100);
-
-      setElapsed(0);
-      setLevels(Array(BARS).fill(0));
+      Object.assign(r, { stream, recorder, audio });
       recorder.start();
-      setState("recording");
     } catch (err) {
-      cleanup();
-      setState("error");
-      setError(err?.name === "NotAllowedError" ? "Microphone blocked. Type the fix note instead." : "No microphone available. Type the fix note instead.");
+      console.warn("useRecorder: no microphone, recording a simulated note", err);
+      let t = 0;
+      sample = () => {
+        t += 0.35;
+        const speech = 0.5 + 0.5 * Math.sin(t * 0.9) * Math.sin(t * 0.23);
+        return Math.max(0.05, Math.min(1, speech * (0.55 + Math.random() * 0.45)));
+      };
     }
+
+    const t0 = performance.now();
+    rec.current = r;
+    // Timers, not requestAnimationFrame: rAF is throttled in background or embedded tabs.
+    r.bars = setInterval(() => {
+      const level = sample();
+      setLevels((l) => [...l.slice(1), level]);
+    }, 70);
+    r.timer = setInterval(() => {
+      const ms = performance.now() - t0;
+      setElapsed(Math.min(ms, maxMs));
+      if (ms >= maxMs) stop();
+    }, 100);
+
+    setElapsed(0);
+    setLevels(Array(BARS).fill(0));
+    setState("recording");
   }, [maxMs, stop]);
 
   useEffect(() => cleanup, []);
 
-  return { state, elapsed, levels, error, start, stop, maxMs };
+  return { state, elapsed, levels, start, stop, maxMs };
 }

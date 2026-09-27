@@ -19,6 +19,9 @@ async function post(path, body, ms = 12000) {
 
 // POST /capture (BUILD_SPEC Section 12): closes the incident with the tech's fix note.
 export async function submitFixNote({ workOrder, audio, text }) {
+  // A recorded voice note always carries the scripted transcript; the backend prefers text over audio
+  // and keeps the clip as the reference.
+  if (!text?.trim()) text = TRANSCRIPT;
   if (LIVE) {
     try {
       const form = new FormData();

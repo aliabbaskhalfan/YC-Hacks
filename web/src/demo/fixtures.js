@@ -52,8 +52,9 @@ export const WORK_ORDERS = {
   },
 };
 
+// The scripted voice note: whatever the tech records, this is the transcript the demo uses.
 export const TRANSCRIPT =
-  "Hard fall on the right side. I swapped the right thigh cover. Seat the lip first, cross pattern, one newton-meter. Looser rattles, tighter cracks on the next bump.";
+  "Hard fall on the right side. I swapped the thigh cover. Seated the lip first, cross pattern, torqued to exactly 1 newton-meter. Any looser than that it rattles, any tighter it cracks easily again.";
 
 // QM's pipeline on the fix note; durations are how long each toast holds in fixture mode.
 export const PIPELINE = [
@@ -93,7 +94,7 @@ export const RECORD = {
       "torque to 1.0 N·m",
     ],
     torque_nm: 1.0,
-    failure_modes: { too_loose: "cover rattles", too_tight: "cover cracks on the next impact" },
+    failure_modes: { too_loose: "cover rattles", too_tight: "cover cracks easily again" },
     verification: "robot stood back up, no alerts",
     outcome: "success",
   },
