@@ -2,7 +2,7 @@
 import random
 from pathlib import Path
 
-OUT = Path(__file__).parent / "mujoco_menagerie" / "unitree_go2"
+OUT = Path(__file__).resolve().parent.parent / "third_party" / "mujoco_menagerie" / "unitree_go2"
 rng = random.Random(7)
 
 W = 0.75             # half-width of the clear aisle (1.5 m cold aisle)

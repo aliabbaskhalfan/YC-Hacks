@@ -4,13 +4,13 @@ Go2 fault-injection demo: a thermal-inspection Go2 walks a data center aisle, th
                 FR thigh motor cover impacts the floor -> fr.thigh.cover
   --fault fall  250 N shove at --fault_at, same impact signal
   --fault motor front right knee motor dies -> fr.calf.motor
-Setup (from sim/):
-  pip install -r requirements.txt
-  git clone https://github.com/google-deepmind/mujoco_menagerie
-  python build_datacenter.py
+Setup (from the repo root):
+  pip install -r sim/requirements.txt
+  bash sim/fetch_menagerie.sh
+  python sim/build_datacenter.py
 Run:
-  mjpython go2_fault_demo.py --unit go2-01            (macOS viewer; Tab / Shift+Tab bring the side panels back)
-  python go2_fault_demo.py --headless out/            (no window: writes out/walk.mp4 and key-frame PNGs)
+  mjpython sim/go2_fault_demo.py --unit go2-02         (macOS viewer; Tab / Shift+Tab bring the side panels back)
+  python sim/go2_fault_demo.py --headless sim/out/     (no window: writes walk.mp4 and key-frame PNGs)
 """
 import argparse, subprocess, time
 from pathlib import Path
@@ -26,7 +26,8 @@ p.add_argument("--push", type=float, default=50.0)                 # trip: peak 
 p.add_argument("--push_s", type=float, default=0.5)               # trip: push duration (half-sine ramp up and down)
 p.add_argument("--strength", type=float, default=0.0)             # motor fault: 0.0 = fully dead motor
 p.add_argument("--fault_at", type=float, default=6.0)             # seconds into the run (1 s settle + 5 s walking)
-p.add_argument("--scene", default="mujoco_menagerie/unitree_go2/scene_datacenter.xml")
+p.add_argument("--scene", default=str(Path(__file__).resolve().parent.parent / "third_party" / "mujoco_menagerie"
+                                         / "unitree_go2" / "scene_datacenter.xml"))
 p.add_argument("--headless", metavar="DIR", help="render to DIR instead of opening the viewer")
 p.add_argument("--duration", type=float, default=12.0)            # headless only
 args = p.parse_args()

@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+web/dist/
+
+# Secrets / local env
+.env
+.env.local
+
+# Superset workspace-local state
+.superset/.ports.env
+.superset/ports.json
+.superset/config.local.json
+
+# Generated data (regenerate with `--seed 7`, or synced live from GBrain/Memorable)
+data/synthetic/*
+!data/synthetic/README.md
+data/brain/*
+!data/brain/README.md
+
+# Third-party assets fetched at setup time (see sim/fetch_menagerie.sh)
+third_party/
+
+# OS
+.DS_Store
