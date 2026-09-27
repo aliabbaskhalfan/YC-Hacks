@@ -51,18 +51,42 @@ def pipeline(tmp_path: Path):
 
 def test_ledger_round_trips(tmp_path: Path) -> None:
     path = tmp_path / "ledger.json"
-    ledger = LoadLedger(path)
+    ledger = LoadLedger(path, LoadLedger.LOCAL)
     assert ledger.loaded == set()
     ledger.add("inc-0001")
     ledger.save()
-    assert LoadLedger(path).loaded == {"inc-0001"}
+    assert LoadLedger(path, LoadLedger.LOCAL).loaded == {"inc-0001"}
+
+
+def test_a_local_load_does_not_mark_the_remote_push_done(tmp_path: Path) -> None:
+    """The bug this guards: a fast local rebuild must not skip the real push."""
+    path = tmp_path / "ledger.json"
+    local = LoadLedger(path, LoadLedger.LOCAL)
+    local.add("inc-0001")
+    local.save()
+
+    remote = LoadLedger(path, "https://gbrain.example/api")
+    assert remote.loaded == set(), "local progress must not count as pushed"
+    remote.add("inc-0001")
+    remote.save()
+
+    # Both journeys are now recorded, independently.
+    assert LoadLedger(path, LoadLedger.LOCAL).loaded == {"inc-0001"}
+    assert LoadLedger(path, "https://gbrain.example/api").loaded == {"inc-0001"}
+
+
+def test_old_format_ledger_is_read_as_local(tmp_path: Path) -> None:
+    path = tmp_path / "ledger.json"
+    path.write_text(json.dumps({"incident_ids": ["inc-0001"]}))
+    assert LoadLedger(path, LoadLedger.LOCAL).loaded == {"inc-0001"}
+    assert LoadLedger(path, "https://gbrain.example/api").loaded == set()
 
 
 def test_ledger_survives_a_corrupt_file(tmp_path: Path) -> None:
     """A damaged ledger must not block a reload."""
     path = tmp_path / "ledger.json"
     path.write_text("{not json")
-    assert LoadLedger(path).loaded == set()
+    assert LoadLedger(path, LoadLedger.LOCAL).loaded == set()
 
 
 def test_load_writes_a_note_and_a_trace(tmp_path: Path, sample, pipeline) -> None:

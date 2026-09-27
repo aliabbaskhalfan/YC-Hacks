@@ -48,25 +48,46 @@ DEFAULT_INCIDENTS = REPO_ROOT / "data" / "synthetic" / "incidents.jsonl"
 
 
 class LoadLedger:
-    """Remembers which incidents were loaded, so a re-run is cheap and safe."""
+    """Remembers which incidents reached which destination.
 
-    def __init__(self, path: Path) -> None:
+    Keyed by target, not just by incident: a `--local-only` run and a push to
+    the real GBrain are different journeys for the same note, and a ledger
+    that conflated them would let a fast local rebuild silently mark the
+    remote corpus as done.
+    """
+
+    LOCAL = "local"
+
+    def __init__(self, path: Path, target: str) -> None:
         self.path = path
-        self.loaded: set[str] = set()
+        self.target = target
+        self.by_target: dict[str, set[str]] = {}
         if path.exists():
             try:
-                self.loaded = set(json.loads(path.read_text()).get("incident_ids", []))
+                raw = json.loads(path.read_text())
             except (OSError, ValueError):
                 # A damaged ledger must not block a reload; the adapters
-                # deduplicate anyway, so the worst case is redundant work.
+                # deduplicate locally anyway, so the cost is redundant work.
                 print(f"warn: ignoring unreadable ledger {path}")
+                raw = {}
+            if "targets" in raw:
+                self.by_target = {key: set(ids) for key, ids in raw["targets"].items()}
+            elif "incident_ids" in raw:
+                # Ledgers written before targets were tracked only ever
+                # described a local load.
+                self.by_target = {self.LOCAL: set(raw["incident_ids"])}
+
+    @property
+    def loaded(self) -> set[str]:
+        return self.by_target.get(self.target, set())
 
     def add(self, incident_id: str) -> None:
-        self.loaded.add(incident_id)
+        self.by_target.setdefault(self.target, set()).add(incident_id)
 
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(json.dumps({"incident_ids": sorted(self.loaded)}, indent=2) + "\n")
+        payload = {"targets": {key: sorted(ids) for key, ids in self.by_target.items()}}
+        self.path.write_text(json.dumps(payload, indent=2) + "\n")
 
 
 def _context_for(row: dict[str, Any]) -> IncidentContext:
@@ -129,10 +150,11 @@ async def run(args: argparse.Namespace, settings: Settings) -> None:
     if "repair_record" not in rows[0]:
         raise SystemExit("incidents have no repair_record — regenerate without --skip-records")
 
+    target = LoadLedger.LOCAL if args.local_only else (settings.gbrain_mcp_url or LoadLedger.LOCAL)
     ledger_path = settings.repo_root / "data" / "runtime" / "loaded_synthetic.json"
     if args.reset and ledger_path.exists():
         ledger_path.unlink()
-    ledger = LoadLedger(ledger_path)
+    ledger = LoadLedger(ledger_path, target)
 
     brain = GBrainAdapter(
         local=LocalBrain(settings.brain_dir),
@@ -168,14 +190,24 @@ async def run(args: argparse.Namespace, settings: Settings) -> None:
     outcomes: dict[str, int] = {}
     # Sequential on purpose: hygiene compares each note against the notes
     # already written, so the order the brain grows in is part of the result.
-    for index, row in enumerate(pending, start=1):
-        label, _ = await load_one(row, brain=brain, memorable=memorable, llm=llm, procedures=procedures)
-        labels[label] = labels.get(label, 0) + 1
-        outcomes[row["outcome"]] = outcomes.get(row["outcome"], 0) + 1
-        ledger.add(row["incident_id"])
-        if index % 100 == 0 or index == len(pending):
-            print(f"  {index}/{len(pending)}")
-    ledger.save()
+    #
+    # The ledger is checkpointed as we go and progress is flushed, not saved
+    # once at the end: a remote push of the whole corpus is minutes of round
+    # trips, and anything that interrupts it (a full disk did exactly this)
+    # must leave a resumable record rather than throwing the run away.
+    try:
+        for index, row in enumerate(pending, start=1):
+            label, _ = await load_one(row, brain=brain, memorable=memorable, llm=llm, procedures=procedures)
+            labels[label] = labels.get(label, 0) + 1
+            outcomes[row["outcome"]] = outcomes.get(row["outcome"], 0) + 1
+            ledger.add(row["incident_id"])
+            if index % args.checkpoint == 0:
+                ledger.save()
+            if index % 25 == 0 or index == len(pending):
+                print(f"  {index}/{len(pending)}", flush=True)
+    finally:
+        # Even on a crash, keep what actually made it so a re-run resumes.
+        ledger.save()
 
     print(f"\nhygiene: {labels or 'nothing new'}")
     print(f"traces:  {outcomes or 'nothing new'}")
@@ -191,6 +223,7 @@ def main() -> None:
     parser.add_argument("--llm", action="store_true", help="run the hygiene pass through the real model")
     parser.add_argument("--local-only", action="store_true", help="skip the remote GBrain/Memorable push")
     parser.add_argument("--limit", type=int, default=0, help="load at most this many incidents")
+    parser.add_argument("--checkpoint", type=int, default=25, help="save the ledger every N incidents")
     args = parser.parse_args()
     asyncio.run(run(args, get_settings(REPO_ROOT)))
 
