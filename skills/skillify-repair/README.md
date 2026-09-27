@@ -1,3 +1,7 @@
-# skillify-repair (track: backend-brain)
+# skillify-repair
 
-Open-source GBrain skill packaging the extract/hygiene/write steps of the skillify agent, MIT licensed. See BUILD_SPEC.md Section 7.3.
+Open-source skill for turning a technician's short repair note into a grounded,
+provenance-rich maintenance memory and procedural trace. See `SKILL.md` for the
+agent contract and `references/example.md` for a complete example.
+
+MIT licensed. The application implementation lives in `server/agent/skillify.py`.

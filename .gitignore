@@ -21,9 +21,14 @@ data/synthetic/*
 !data/synthetic/README.md
 data/brain/*
 !data/brain/README.md
+data/clips/
+data/memory/
+data/runtime/
 
 # Third-party assets fetched at setup time (see sim/fetch_menagerie.sh)
 third_party/
 
 # OS
 .DS_Store
+.generated/
+.env
