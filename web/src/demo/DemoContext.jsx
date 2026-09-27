@@ -21,7 +21,8 @@ function snapshot(beat) {
   const s = {
     beat,
     units: { ...healthy },
-    robot: play(REPLAYS.walk),
+    // A refresh starts go2-02 at the back of the aisle and walks it up to the toolbox.
+    robot: play(REPLAYS.patrol),
     workOrders: {},
     techUnit: null,
     fix: { phase: "idle", stage: -1, transcript: null },
@@ -57,6 +58,9 @@ function reducer(state, action) {
       // Auto-advancing after a live fix note keeps what the tech actually said.
       return action.keep ? { ...next, record: state.record ?? next.record, fix: state.fix } : next;
     }
+    case "patrolDone":
+      // Reached the toolbox before the presenter moved on: keep trotting there until beat 2.
+      return state.beat === 0 && state.robot.replay === REPLAYS.patrol ? { ...state, robot: play(REPLAYS.patrolLoop) } : state;
     case "impact":
       return {
         ...state,
@@ -99,6 +103,7 @@ export function DemoProvider({ children }) {
 
   const onReplayEvent = useCallback((ev) => {
     if (ev.type === "impact") dispatch({ type: "impact" });
+    if (ev.type === "patrol_end") dispatch({ type: "patrolDone" });
   }, []);
 
   const startRepair = useCallback((unit) => dispatch({ type: "unit", unit, status: "in_repair" }), []);

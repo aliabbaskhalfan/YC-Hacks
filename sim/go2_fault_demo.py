@@ -257,6 +257,42 @@ def export_replays(out):
         up.append(pose_frame(view, i / REPLAY_FPS, shift))
     write_replay(out / "go2-02_stand_up.json", up, False, "go2-02 back on its feet after the fix (kinematic, not simulated)")
     write_replay(out / "go2_standing.json", [dict(up[-1], t=0.0)], False, "Go2 standing still, same spot as the stand-up's end")
+    trip_start_x = next(xp[BASE][0] for t, xp, _, _ in samples if t >= FALL_T0)
+    export_patrol(out, shift, trip_start_x)
+
+PATROL_BACK_M = 8.9  # how much further back the patrol starts than the trip run (~27 s of walking)
+
+def export_patrol(out, shift, end_x):
+    """Fault-free walk down the aisle from the back, ending where the trip replay starts."""
+    pd = mujoco.MjData(m)
+    mujoco.mj_resetDataKeyframe(m, pd, 0)
+    pd.qpos[0] -= PATROL_BACK_M
+    mujoco.mj_forward(m, pd)
+    frames, raw, next_t, max_dy = [], [], 0.0, 0.0
+    while pd.time < 45.0 and pd.xpos[BASE][0] < end_x:
+        pd.ctrl[:] = KP * (target(pd.time) - pd.qpos[qadr]) - KD * pd.qvel[vadr]
+        mujoco.mj_step(m, pd)
+        max_dy = max(max_dy, abs(pd.xpos[BASE][1]))
+        if pd.time >= next_t:
+            frames.append(pose_frame(pd, pd.time, shift))
+            raw.append((pd.time, pd.xpos.copy(), pd.xquat.copy()))
+            next_t += 1.0 / REPLAY_FPS
+    end = frames[-1]["t"]
+
+    # Its own last stride, walked in place at the spot it stopped, so the handoff doesn't jump sideways.
+    view = mujoco.MjData(m)
+    stride = [r for r in raw if r[0] > raw[-1][0] - T_GAIT]
+    v = (stride[-1][1][BASE] - stride[0][1][BASE]) / (stride[-1][0] - stride[0][0])
+    loop = []
+    for t, xp, xq in stride:
+        drift = v * (t - stride[-1][0])
+        drift[2] = 0.0
+        view.xpos[:], view.xquat[:] = xp - drift, xq
+        loop.append(pose_frame(view, t, shift))
+    write_replay(out / "go2-02_patrol_loop.json", loop, True, "go2-02 trotting in place where the patrol ended (MuJoCo sim)")
+    write_replay(out / "go2-02_patrol.json", frames, False, "go2-02 night round: walks the aisle up to the toolbox (MuJoCo sim)",
+                 events=[{"t": end, "type": "patrol_end"}])
+    print(f"[patrol] {end:.1f} s, base x {pd.xpos[BASE][0] - PATROL_BACK_M * 0 :.2f} (end target {end_x:.2f}), max |y| drift {max_dy:.2f} m")
 
 def export_scene(path, shift):
     """Static world geoms (racks, trays, lights, toolbox...) for the web viewer, in the replays' shifted frame."""

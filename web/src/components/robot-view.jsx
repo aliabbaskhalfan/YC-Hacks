@@ -10,6 +10,12 @@ const VIEWS = {
   part: { camera: { position: [0.85, 0.55, 1.45], fov: 38 }, target: [0.05, 0.14, 0.3] },
   // Inside the data center aisle, like the MuJoCo render: behind the dog, looking down the rows.
   "dc-walk": { camera: { position: [-3.6, 0.95, -0.3], fov: 45 }, target: [-1.2, 0.3, -0.3] },
+  // Chase cam for the patrol: starts behind the dog at the back of the aisle and follows it along x.
+  "dc-follow": {
+    camera: { position: [-12.9, 1.0, -0.3], fov: 45 },
+    target: [-10.5, 0.3, -0.3],
+    follow: { cam: [-2.2], target: [0.25] },
+  },
   "dc-aisle": { camera: { position: [-3.3, 1.05, -0.28], fov: 45 }, target: [0.2, 0.25, -0.1] },
   "dc-close": { camera: { position: [1.45, 0.95, 0.1], fov: 45 }, target: [0.0, 0.12, 0.25] },
 };
@@ -17,7 +23,7 @@ const VIEWS = {
 export function RobotView({ status, replay, playKey, onReplayEvent, view = "close", env = null, highlight = null, labels = true }) {
   const alerting = status === "red" || status === "in_repair" || status === "fixed";
   const inDataCenter = env === "datacenter";
-  const { camera, target } = VIEWS[view];
+  const { camera, target, follow = null } = VIEWS[view];
   return (
     <ViewBoundary>
     <Go2Viewer
@@ -36,6 +42,7 @@ export function RobotView({ status, replay, playKey, onReplayEvent, view = "clos
       background={inDataCenter ? "#1d2026" : "#0a0d12"}
       camera={camera}
       target={target}
+      follow={follow}
     >
       {inDataCenter && <DataCenterScene />}
     </Go2Viewer>

@@ -9,7 +9,7 @@ import { useDemo } from "@/demo/DemoContext.jsx";
 import { STATUS } from "./status.js";
 
 // go2-02 lives in the data center aisle; go2-17 (a construction site) stays in the plain studio view.
-const DC_VIEW = { [REPLAYS.walk]: "dc-walk", [REPLAYS.tripFall]: "dc-aisle" };
+const DC_VIEW = { [REPLAYS.patrol]: "dc-follow", [REPLAYS.patrolLoop]: "dc-follow", [REPLAYS.walk]: "dc-follow", [REPLAYS.tripFall]: "dc-aisle" };
 
 export function RobotPanel({ unitId, caption, className }) {
   const { units, robot, onReplayEvent } = useDemo();

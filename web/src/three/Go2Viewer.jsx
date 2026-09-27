@@ -1,10 +1,29 @@
-import { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Suspense, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, Grid } from "@react-three/drei";
 import Go2Rig from "./Go2Rig.jsx";
 import { usePoseSource } from "./usePoseSource.js";
 
 const SIM_PORT = import.meta.env.VITE_SIM_PORT ?? "8100";
+
+// Chase camera: keeps the camera and orbit target a fixed distance behind the Go2 along the aisle
+// (three.js x = MuJoCo x), easing so the gait's sway doesn't shake the shot. y and z stay put.
+function FollowCamera({ poseRef, controls, follow }) {
+  const placed = useRef(false);
+  useFrame(({ camera }, dt) => {
+    const base = poseRef.current?.bodies?.base;
+    const c = controls.current;
+    if (!base || !c) return;
+    const x = base.p[0];
+    // Jump into place on the first frame, then ease at a rate that holds at any frame rate.
+    const k = placed.current ? 1 - Math.exp(-4 * dt) : 1;
+    c.target.x += (x + follow.target[0] - c.target.x) * k;
+    camera.position.x += (x + follow.cam[0] - camera.position.x) * k;
+    placed.current = true;
+    c.update();
+  });
+  return null;
+}
 
 // Scene props that ride along in a replay (in MuJoCo world coordinates, like the body poses).
 function ReplayProps({ props }) {
@@ -39,9 +58,11 @@ export default function Go2Viewer({
   target = [0, 0.15, 0],
   labels = true,
   grid = true,
+  follow = null,
   background = "#0a0d12",
   children,
 }) {
+  const controls = useRef(null);
   const { poseRef, source, props } = usePoseSource({
     wsUrl: live ? `ws://${location.hostname}:${SIM_PORT}/sim/stream` : null,
     replayUrl,
@@ -72,7 +93,8 @@ export default function Go2Viewer({
           {children}
         </Suspense>
         {grid && <Grid args={[10, 10]} cellColor="#1b2432" sectionColor="#2a3648" fadeDistance={8} infiniteGrid />}
-        <OrbitControls target={target} />
+        <OrbitControls ref={controls} target={target} />
+        {follow && <FollowCamera poseRef={poseRef} controls={controls} follow={follow} />}
       </Canvas>
       {showSource && <div className="source-pill">{source === "live" ? "live sim" : "replay (no live sim)"}</div>}
     </div>

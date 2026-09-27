@@ -20,6 +20,8 @@ export const COVER_PART = "fr.thigh.cover";
 export const COVER_NODE = "FR_hip"; // registry mesh_nodes for fr.thigh.cover
 
 export const REPLAYS = {
+  patrol: "/replays/go2-02_patrol.json",
+  patrolLoop: "/replays/go2-02_patrol_loop.json",
   walk: "/replays/go2_walk_loop.json",
   tripFall: "/replays/go2-02_trip_fall.json",
   standUp: "/replays/go2-02_stand_up.json",

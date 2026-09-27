@@ -9,7 +9,7 @@ W = 0.75             # half-width of the clear aisle (1.5 m cold aisle)
 D = 1.07             # rack depth
 H = 2.05             # rack height
 RW = 0.6             # rack width along the aisle
-X0, NR = -3.0, 32    # first rack edge, racks per row
+X0, NR = -10.2, 44   # first rack edge, racks per row (long enough for the dog to patrol in from the back)
 X1 = X0 + NR * RW
 CEIL = 3.3
 
@@ -35,7 +35,7 @@ for side in (1, -1):
         xc = X0 + RW * (k + 0.5)
         n = f"{tag}{k:02d}"
         cable = rng.choice(list(CABLE))
-        hot = side < 0 and k == 10   # the rack the robot should be inspecting when it fails
+        hot = side < 0 and k == 22   # the rack the robot should be inspecting when it fails (x = 3.3)
 
         # cabinet shell
         geom(f"{n}_back", "box", f(RW / 2, 0.01, H / 2), f(xc, yb, H / 2), "rack_black")
@@ -114,7 +114,7 @@ for r in range(int(2 * L / 2.4) + 1):
     x = X0 + 1.2 + 2.4 * r
     geom(f"lightstrip{r}", "box", f(0.8, 0.07, 0.015), f(x, 0, CEIL - 0.02), "light_panel")
     # Non-shadow spotlights render surfaces above them black in MuJoCo 3.14, so only the shadow light is a spot.
-    if r == 2:
+    if r == 5:  # the one shadow light sits over the trip, x = 3.0
         lights.append(f'    <light pos="{f(x, 0, CEIL - 0.1)}" dir="0 0 -1" diffuse="0.45 0.46 0.48" '
                       f'specular="0.15 0.15 0.15" attenuation="1 0.02 0.01" castshadow="true"/>')
     elif r % 2 == 0:
