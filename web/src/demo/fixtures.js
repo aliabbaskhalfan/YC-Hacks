@@ -112,12 +112,12 @@ export const PROCEDURE = {
   title: "Replace front-right thigh cover",
   source: "From 1 field report · go2-02",
   important: "1 N·m torque",
+  // Mirrors server/procedures/replace-thigh-cover.json (what the 4D procedure viewer plays).
   steps: [
-    { title: "Remove the 4 M3 cover screws", detail: "Lift the cracked cover off." },
-    { title: "Check the motor housing", detail: "If the housing is cracked, stop: that is a motor swap." },
-    { title: "Seat the lip in the groove first", detail: "Before any screw goes in, or it seats crooked and rubs at full swing." },
-    { title: "Install screws in a cross pattern", detail: "Snug each one before torquing." },
-    { title: "Torque to 1.0 N·m (sim value)", detail: "Looser rattles loose; tighter cracks the bosses on the next bump." },
+    { title: "Remove the 4 M3 cover screws", detail: "Back out the four M3 cover screws with a 2.5 mm hex driver and lift the cover off." },
+    { title: "Inspect the motor housing", detail: "If the housing is cracked, stop: that is a motor swap, not a cover swap." },
+    { title: "Fit the new cover", detail: "The inner lip drops into the groove before any screw goes in, or it seats crooked." },
+    { title: "Torque in a cross pattern to 1.0 N·m", detail: "1 → 3 → 2 → 4, one pass. Looser rattles; tighter cracks the bosses (sim value)." },
   ],
 };
 

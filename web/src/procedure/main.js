@@ -11,6 +11,12 @@ const PROCEDURE_URL = '/data/procedures/replace-thigh-cover.json';
 const PARTS_URL = '/data/registry/parts.json';
 const MODEL_URL = '/go2_procedure.glb';
 
+// ?embed=1: running inside the Fleetbrain stage. The host draws the step list, so the caption is
+// hidden; the current step is posted to the parent, and the parent can jump to a step.
+const params = new URLSearchParams(location.search);
+const EMBED = params.has('embed') && window.parent !== window;
+if (EMBED) document.body.classList.add('embed');
+
 const stage = document.getElementById('stage');
 const caption = document.getElementById('caption');
 const hud = document.getElementById('hud');
@@ -146,7 +152,25 @@ async function boot() {
   let phase = 'settle';
   let phaseT = 0;
 
+  if (EMBED) {
+    player.speed = Number(params.get('speed')) || 1;
+    addEventListener('message', (e) => {
+      if (e.origin !== location.origin || e.data?.source !== 'fleetbrain-stage') return;
+      if (e.data.type === 'goToStep') {
+        phase = 'run';
+        player.goToStep(e.data.index);
+        player.play();
+      }
+    });
+  }
+
   player.onChange((state) => {
+    if (EMBED) {
+      parent.postMessage(
+        { source: 'fleetbrain-procedure', index: state.index, t: state.t, running: phase === 'run' },
+        location.origin,
+      );
+    }
     cap.render(state);
     const shot = phase === 'settle' ? 'hero' : state.camera;
     director.setShot(shot, rig.root, robotCentre);

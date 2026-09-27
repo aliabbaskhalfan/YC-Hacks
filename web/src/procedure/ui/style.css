@@ -222,3 +222,6 @@ html, body {
   .gauge-readout .nm { font-size: 22px; }
   .hud { top: 12px; right: 12px; }
 }
+
+/* Embedded in the Fleetbrain stage: the host renders the step list. */
+body.embed .caption { display: none; }
