@@ -28,6 +28,13 @@ started_any=0
 
 # ---- web (Vite/React/Three.js) ---------------------------------------------
 if [ -f web/package.json ]; then
+  # Vite only exposes import.meta.env.VITE_* vars it loads itself (from an
+  # actual .env file) — a custom `define` targeting that namespace is
+  # silently overridden by Vite's own per-module injection in dev mode.
+  cat > web/.env.local <<EOF
+VITE_API_PORT=$API_PORT
+VITE_SIM_PORT=$SIM_PORT
+EOF
   pm="$(cd web && detect_node_pm)"
   dev_cmd="$(node_dev_cmd "$pm")"
   log "web: $dev_cmd --port $WEB_PORT"
