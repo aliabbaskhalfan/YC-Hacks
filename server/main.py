@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from server.agent.skillify import SkillifyAgent
 from server.config import Settings, get_settings
+from server.fleet.api import router as fleet_router
 from server.incidents import IncidentStore
 from server.integrations.gbrain import GBrainAdapter, LocalBrain
 from server.integrations.llm import ModelGateway
@@ -112,6 +113,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app = FastAPI(title="Machine Brain", version="0.1.0")
     services = Services(settings or get_settings())
     app.state.services = services
+
+    # Fleet intelligence: /flags, approve/dismiss/assign, counters, patterns.
+    # Kept as its own router so Section 9's surface can change without
+    # touching the capture path. Approving a flag reaches the event hub
+    # through app.state.services to broadcast procedure_updated.
+    app.include_router(fleet_router)
 
     @app.get("/health")
     async def health() -> dict[str, Any]:
