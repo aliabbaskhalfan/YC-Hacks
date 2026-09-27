@@ -1,0 +1,20 @@
+{
+  "schema": "memorable.qm-patch.v1",
+  "upstream": "https://github.com/yc-software/qm",
+  "tag": "v0.1.12",
+  "patch": "qm-0.1.12-local-core-network-v1.patch",
+  "patch_sha256": "e4012310c4f71928c6ec75618daaaa72cec0e2ebaa3176a6c00b950dd3a62981",
+  "scope": "Optional local Docker compatibility: pass existing QM_CORE_CONTAINER into local backend options. No model or memory behavior changes.",
+  "files": [
+    {
+      "path": "src/config.ts",
+      "baseline_sha256": "882a98718f228971aecf020f150e5080abd1af15c2ee449729fae817181ff2b5",
+      "patched_sha256": "0e983c90b93a4fea456d10095b13a7e267ccaf06cce63cb5ea8050a93bb30c29"
+    },
+    {
+      "path": "test/local-sandbox-config.test.ts",
+      "baseline_sha256": null,
+      "patched_sha256": "4ff394d842f25a4972927d83cfe3cbe9e297548f60ddfb75b05b4885f2ce0ac0"
+    }
+  ]
+}

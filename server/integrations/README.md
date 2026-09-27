@@ -27,8 +27,10 @@ gate, kill switch, redaction and receipt validation are isolated in
 `memorable.py`. With `USE_LOCAL_FALLBACKS=true`, captures remain inspectable if
 an optional remote service is unavailable.
 
-This repository is the FastAPI application, not a Quartermaster deployment.
-`MEMORABLE_BACKEND=qm` records the intended future host, but it does not install
-or patch QM. Native pre-model injection and per-scope QM consent must be applied
-inside the actual QM 0.1.12 core image and verified there before claiming the QM
-adapter is production-ready.
+The local Quartermaster deployment now lives under `deploy/qm-local`, backed by
+the reviewed patched source in `deploy/qm-source-0.1.12`. Its core image pins
+Memorable 0.5.31-shared-env.1, preserves QM's factual notebook, performs
+supplemental pre-model recall, and enables capture consent only for the actual
+authenticated `personal:hackathon` scope. The FastAPI adapter remains the path
+that writes Skillify notes to GBrain and sends completed repair traces directly
+to the shared environment.
