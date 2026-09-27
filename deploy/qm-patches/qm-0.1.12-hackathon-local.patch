@@ -1,0 +1,152 @@
+diff --git a/cli/manifest.json b/cli/manifest.json
+index 3dcb8bf..c6874f8 100644
+--- a/cli/manifest.json
++++ b/cli/manifest.json
+@@ -1,10 +1,10 @@
+ {
+-  "sandboxBase": "registry.invalid/qm/qm-sandbox-base@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
++  "sandboxBase": "ghcr.io/yc-software/qm/sandbox-base@sha256:9c632c8359eb41a626880b4669328c8fbe2fe7e7d38b99e5cc37fd389c2d04ab",
+   "services": {
+-    "core": "registry.invalid/qm/qm-core@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+-    "web-ui": "registry.invalid/qm/qm-web-ui@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+-    "admin": "registry.invalid/qm/qm-admin@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+-    "portal": "registry.invalid/qm/qm-portal@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+-    "auth": "registry.invalid/qm/qm-auth@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++    "core": "ghcr.io/yc-software/qm/core@sha256:8859f0debbd5c6de2166c64bde18797c48ae638dd320de5861c0a5e36ddaff64",
++    "web-ui": "ghcr.io/yc-software/qm/web-ui@sha256:746ca51bb2dcb4d9d7295d57bfe7b4868c8aecb30f30bafc80fc9573e358be99",
++    "admin": "ghcr.io/yc-software/qm/admin@sha256:3e62508338529d03262a5f331bf3d16e712990c54f83bc753527aeae19ea0325",
++    "portal": "ghcr.io/yc-software/qm/portal@sha256:e7a6eb83acb828c3dbd68b2514986218f2946dbd3bf1d563f768eb26e1d8457a",
++    "auth": "ghcr.io/yc-software/qm/auth@sha256:6a7f59003e36488d5f3e1dfb066272edaf56d5981e53583d74346ffa51522b3f"
+   }
+ }
+diff --git a/cli/src/backends/docker.ts b/cli/src/backends/docker.ts
+index e963a2b..ade48ca 100644
+--- a/cli/src/backends/docker.ts
++++ b/cli/src/backends/docker.ts
+@@ -121,14 +121,24 @@ export function hostDockerSocket(): { path: string; gid?: string } {
+   if (configured && !configured.startsWith("unix://")) {
+     throw new CliError('sandbox.backend "local" requires a Unix Docker socket');
+   }
+-  const path = configured?.slice("unix://".length) || "/var/run/docker.sock";
++  const clientPath = configured?.slice("unix://".length) || "/var/run/docker.sock";
++  const mountPath = process.env.QM_DOCKER_SOCKET_MOUNT?.trim() || clientPath;
++  if (!mountPath.startsWith("/")) {
++    throw new CliError("QM_DOCKER_SOCKET_MOUNT must be an absolute path");
++  }
+   let gid: string | undefined;
+-  try {
+-    gid = String(statSync(path).gid);
+-  } catch {
+-    throw new CliError(`sandbox.backend "local" cannot read the Docker socket at ${path}`);
++  const gidOverride = process.env.QM_DOCKER_SOCKET_GID?.trim();
++  if (gidOverride !== undefined && gidOverride !== "") {
++    if (!/^\d+$/.test(gidOverride)) throw new CliError("QM_DOCKER_SOCKET_GID must be a numeric group id");
++    gid = gidOverride;
++  } else {
++    try {
++      gid = String(statSync(clientPath).gid);
++    } catch {
++      throw new CliError(`sandbox.backend "local" cannot read the Docker socket at ${clientPath}`);
++    }
+   }
+-  return { path, ...(gid ? { gid } : {}) };
++  return { path: mountPath, ...(gid ? { gid } : {}) };
+ }
+ 
+ function requireDocker(): void {
+diff --git a/cli/test/docker-socket.test.ts b/cli/test/docker-socket.test.ts
+index ffa5c80..cc4db8e 100644
+--- a/cli/test/docker-socket.test.ts
++++ b/cli/test/docker-socket.test.ts
+@@ -7,6 +7,8 @@ import { hostDockerSocket } from "../src/backends/docker.ts";
+ 
+ test("Docker socket group uses the configured host path without platform-specific commands", () => {
+   const prior = process.env.DOCKER_HOST;
++  const priorMount = process.env.QM_DOCKER_SOCKET_MOUNT;
++  const priorGid = process.env.QM_DOCKER_SOCKET_GID;
+   const dir = mkdtempSync(join(tmpdir(), "qm-docker-socket-"));
+   const path = join(dir, "docker.sock");
+   try {
+@@ -17,9 +19,19 @@ test("Docker socket group uses the configured host path without platform-specifi
+     assert.throws(() => hostDockerSocket(), /cannot read the Docker socket/);
+     process.env.DOCKER_HOST = "tcp://localhost:2375";
+     assert.throws(() => hostDockerSocket(), /requires a Unix Docker socket/);
++    process.env.DOCKER_HOST = `unix://${path}`;
++    process.env.QM_DOCKER_SOCKET_MOUNT = "/var/run/docker.sock";
++    process.env.QM_DOCKER_SOCKET_GID = "991";
++    assert.deepEqual(hostDockerSocket(), { path: "/var/run/docker.sock", gid: "991" });
++    process.env.QM_DOCKER_SOCKET_GID = "not-a-gid";
++    assert.throws(() => hostDockerSocket(), /numeric group id/);
+   } finally {
+     if (prior === undefined) delete process.env.DOCKER_HOST;
+     else process.env.DOCKER_HOST = prior;
++    if (priorMount === undefined) delete process.env.QM_DOCKER_SOCKET_MOUNT;
++    else process.env.QM_DOCKER_SOCKET_MOUNT = priorMount;
++    if (priorGid === undefined) delete process.env.QM_DOCKER_SOCKET_GID;
++    else process.env.QM_DOCKER_SOCKET_GID = priorGid;
+     rmSync(dir, { recursive: true, force: true });
+   }
+ });
+diff --git a/deploy/core/Dockerfile b/deploy/core/Dockerfile
+index 1297587..0bc3dde 100644
+--- a/deploy/core/Dockerfile
++++ b/deploy/core/Dockerfile
+@@ -22,6 +22,14 @@ COPY .husky/install.mjs .husky/install.mjs
+ RUN npm ci --omit=dev && npm audit --omit=dev --audit-level=moderate \
+   && rm -rf /root/.npm /tmp/node-compile-cache
+ 
++# Procedural-memory adapter pinned to the reviewed shared-environment build.
++COPY vendor/memorable-cli-0.5.31-shared-env.1.tgz /tmp/memorable-cli.tgz
++RUN echo "7b130a2e27978a927aa5935ddbc00358a4eea9963d5bbd5beb2b257bc441b047  /tmp/memorable-cli.tgz" | sha256sum -c - \
++  && npm install --global /tmp/memorable-cli.tgz --ignore-scripts --no-audit --no-fund \
++  && memorable --version \
++  && rm -f /tmp/memorable-cli.tgz \
++  && rm -rf /root/.npm
++
+ COPY --from=connector-sdk-build /app/.generated/connector-sdk ./.generated/connector-sdk
+ COPY src ./src
+ COPY scripts/migrate-transcript-tape.ts ./scripts/migrate-transcript-tape.ts
+diff --git a/plugins/web-ui/server/index.ts b/plugins/web-ui/server/index.ts
+index 96ae135..c03cbfe 100644
+--- a/plugins/web-ui/server/index.ts
++++ b/plugins/web-ui/server/index.ts
+@@ -28,7 +28,7 @@ import {
+   sendBuffered,
+   serveEmojiFavicon,
+ } from "../../chassis/src/http.ts";
+-import { verifyPortalIdentity, PORTAL_IDENTITY_HEADER } from "../../chassis/src/portal-identity.ts";
++import { mintPortalIdentity, verifyPortalIdentity, PORTAL_IDENTITY_HEADER } from "../../chassis/src/portal-identity.ts";
+ import { createBrandingCache, injectBranding } from "../../chassis/src/branding.ts";
+ import { parseSuggestedActivities } from "../../chassis/src/suggested-activities.ts";
+ 
+@@ -48,7 +48,7 @@ const PUBLIC_URL = (process.env.WEB_UI_PUBLIC_URL ?? `http://localhost:${PORT}`)
+ const WEB_UI_DEV = process.env.WEB_UI_DEV === "1";
+ const ALLOW_UNSIGNED_TEST_IDENTITY =
+   process.env.NODE_ENV === "test" && process.env.ALLOW_UNSIGNED_TEST_IDENTITY === "1";
+-const COOKIE_AUTH = !CORE_SIGNING_SECRET || ALLOW_UNSIGNED_TEST_IDENTITY;
++const COOKIE_AUTH = process.env.WEB_UI_COOKIE_AUTH === "1" || !CORE_SIGNING_SECRET || ALLOW_UNSIGNED_TEST_IDENTITY;
+ const AUTH_MODE = COOKIE_AUTH ? "dev" : "portal";
+ const ALLOW = (process.env.WEB_UI_PRINCIPALS ?? "")
+   .split(",")
+@@ -3117,7 +3117,20 @@ export const handler = async (req: IncomingMessage, res: ServerResponse) => {
+   res.setHeader("x-content-type-options", "nosniff");
+   res.setHeader("x-frame-options", "DENY");
+   const raw = req.headers[PORTAL_IDENTITY_HEADER];
+-  const token = Array.isArray(raw) ? raw[0] : raw;
++  let token = Array.isArray(raw) ? raw[0] : raw;
++  if (!token && COOKIE_AUTH && PORTAL_IDENTITY_SECRET) {
++    const outcome = authenticate(req);
++    if ("identity" in outcome) {
++      token = mintPortalIdentity(
++        {
++          p: outcome.identity.user,
++          ...(outcome.identity.name ? { n: outcome.identity.name } : {}),
++          exp: Date.now() + 60_000,
++        },
++        PORTAL_IDENTITY_SECRET,
++      );
++    }
++  }
+   try {
+     await portalTokenStore.run(token, () => routeRequest(req, res));
+   } catch (err) {

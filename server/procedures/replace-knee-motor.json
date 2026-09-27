@@ -1,0 +1,13 @@
+{
+  "procedure_id": "replace-knee-motor",
+  "title": "Replace knee actuator (sim procedure)",
+  "version": "1.0",
+  "disclaimer": "Training/demo procedure. Values and hardware details are placeholders, not Unitree service instructions.",
+  "steps": [
+    {"step_id": 1, "title": "Power down", "text": "Power down the robot and isolate the battery before service.", "parts": ["base.battery"], "version": "1.0", "tips": []},
+    {"step_id": 2, "title": "Open the leg", "text": "Remove the leg cover to expose the knee actuator and harness.", "parts": ["fr.calf.motor", "fr.leg.harness"], "version": "1.0", "tips": []},
+    {"step_id": 3, "title": "Disconnect harness", "text": "Disconnect the actuator harness and inspect the connector.", "parts": ["fr.leg.harness"], "version": "1.0", "tips": []},
+    {"step_id": 4, "title": "Remove knee actuator", "text": "Remove the knee actuator using the simulated service sequence, then install and reconnect the replacement.", "parts": ["fr.calf.motor"], "version": "1.0", "tips": []},
+    {"step_id": 5, "title": "Calibrate", "text": "Run encoder calibration, then run the stand cycle and verify that tracking error stays below the alert threshold.", "parts": ["fr.calf.motor"], "version": "1.0", "tips": []}
+  ]
+}

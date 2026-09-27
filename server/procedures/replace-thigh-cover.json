@@ -1,0 +1,100 @@
+{
+  "procedure_id": "replace-thigh-cover",
+  "title": "Replace thigh motor cover",
+  "version": "1.0",
+  "unit_type": "go2",
+  "default_leg": "fr",
+  "disclaimer": "Training/demo procedure. Torque values and hardware details are placeholders generated for the hackathon sim, not Unitree service instructions.",
+  "fault": {
+    "signature": "cover cracked after a side fall",
+    "sim": "d.xfrc_applied[m.body('base').id] = [0, -250, 0, 0, 0, 0] for 0.2 s",
+    "signal": "impact(m, d, cover, floor) > 500",
+    "observed": "1750 N on the cover cylinder",
+    "part_id": "fr.thigh.cover"
+  },
+  "hardware": {
+    "fastener": "M3 x 8 socket cap",
+    "count": 4,
+    "driver": "2.5 mm hex",
+    "torque_nm": 1.0,
+    "torque_tolerance_nm": 0.1,
+    "pattern": "cross",
+    "sequence": [1, 3, 2, 4],
+    "why": "The cover is plastic threaded onto metal bosses. Below 1.0, vibration from walking backs the screws out and the cover starts rattling within days. Above 1.0, the plastic bosses take hairline cracks that grow with every heat cycle, and the cover splits at a screw hole a few weeks later."
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "title": "Remove the 4 M3 cover screws",
+      "text": "Back out the four M3 cover screws with a 2.5 mm hex driver and lift the cover off.",
+      "parts": ["fr.thigh.cover_screws", "fr.thigh.cover"],
+      "version": "1.0",
+      "tips": [],
+      "anim": "remove_screws",
+      "camera": "cover_three_quarter",
+      "duration_s": 9
+    },
+    {
+      "step_id": 2,
+      "title": "Inspect the motor housing",
+      "text": "Check the motor housing underneath for cracks. If it is cracked, stop: that is a motor swap, not a cover swap.",
+      "parts": ["fr.thigh.motor"],
+      "version": "1.0",
+      "tips": [],
+      "anim": "inspect_housing",
+      "camera": "cover_face_on",
+      "duration_s": 6,
+      "decision": {
+        "question": "Is the motor housing cracked?",
+        "yes": "STOP. Escalate to replace-thigh-motor. Do not fit a new cover.",
+        "no": "Continue to step 3."
+      }
+    },
+    {
+      "step_id": 3,
+      "title": "Fit the new cover",
+      "text": "Drop the new cover on so the inner lip lands in the groove on the motor housing, then check it sits flush before any screw goes in.",
+      "parts": ["fr.thigh.cover"],
+      "version": "1.0",
+      "tips": [
+        {
+          "kind": "gotcha",
+          "text": "The inner lip has to drop into the groove on the motor housing before any screws go in. If you let the screws pull it down, it seats crooked and rubs the thigh at full swing."
+        }
+      ],
+      "anim": "seat_cover",
+      "camera": "cover_section",
+      "duration_s": 11
+    },
+    {
+      "step_id": 4,
+      "title": "Torque in a cross pattern to 1.0 N·m",
+      "text": "Run the screws down finger tight, then torque 1 → 3 → 2 → 4 to 1.0 N·m.",
+      "parts": ["fr.thigh.cover_screws"],
+      "version": "1.0",
+      "tips": [
+        {
+          "kind": "spec",
+          "text": "1.0 N·m ± 0.1. Cross pattern 1 → 3 → 2 → 4, one pass."
+        }
+      ],
+      "anim": "torque_cross",
+      "camera": "cover_face_on",
+      "duration_s": 14
+    }
+  ],
+  "geometry": {
+    "note": "Cover mesh is the real disc lifted out of data/cad/UnitreeGo2.stl (measured 96.5 mm dia x 4.7 mm). The housing face, groove, bosses and M3 screws are synthesized on top of the Menagerie actuator boss, whose outer face sits at y=0.0568 in the FR_thigh frame.",
+    "host_node": "FR_thigh",
+    "cover_mesh": "/fr_thigh_cover.glb",
+    "cover_center": [0.0, 0.0568, 0.0],
+    "cover_axis": [0, 1, 0],
+    "cover_radius": 0.0482,
+    "cover_thickness": 0.0047,
+    "housing_thickness": 0.003,
+    "lip_radius": 0.032,
+    "lip_depth": 0.0035,
+    "bolt_circle_radius": 0.0395,
+    "screw_angles_deg": [45, 135, 225, 315]
+  }
+}

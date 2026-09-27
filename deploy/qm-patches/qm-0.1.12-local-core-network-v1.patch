@@ -1,0 +1,58 @@
+--- a/src/config.ts
++++ b/src/config.ts
+@@ -330,6 +330,7 @@
+   return {
+     ...(env.LOCAL_SANDBOX_IMAGE ? { image: env.LOCAL_SANDBOX_IMAGE } : {}),
+     ...(env.LOCAL_SANDBOX_DOCKER_BIN ? { dockerBin: env.LOCAL_SANDBOX_DOCKER_BIN } : {}),
++    ...(env.QM_CORE_CONTAINER ? { coreContainer: env.QM_CORE_CONTAINER } : {}),
+     ...(numEnvStrict("LOCAL_SANDBOX_CPUS", env.LOCAL_SANDBOX_CPUS) !== undefined
+       ? { cpus: numEnvStrict("LOCAL_SANDBOX_CPUS", env.LOCAL_SANDBOX_CPUS) }
+       : {}),
+--- /dev/null
++++ b/test/local-sandbox-config.test.ts
+@@ -0,0 +1,45 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import { mkdtempSync } from "node:fs";
++import { tmpdir } from "node:os";
++import { join } from "node:path";
++import { loadConfig } from "../src/config.ts";
++import { createLocalSandbox, localNetworkName } from "../src/sandbox/local-sandbox.ts";
++import { createLocalWorkspaceStore } from "../src/workspace/workspace-store.ts";
++import { installFakeDocker } from "./support/fake-docker.ts";
++
++for (const containerized of [true, false]) {
++  test(`environment wiring reaches local sandbox through ${containerized ? "its container network" : "host loopback"}`, async () => {
++    const directory = mkdtempSync(join(tmpdir(), "qm-local-config-"));
++    const config = loadConfig({ HARNESS: "mock", SANDBOX_BACKEND: "local", LOCAL_SANDBOX_IMAGE: "qm-test-image",
++      ...(containerized ? { QM_CORE_CONTAINER: "qm-test-core" } : {}) });
++    const docker = installFakeDocker(32123);
++    const requested: URL[] = [];
++    const fetchImpl: typeof fetch = async (input) => {
++      const url = new URL(String(input));
++      requested.push(url);
++      if (url.pathname === "/health") return new Response("ok");
++      if (url.pathname === "/read") return new Response("missing", { status: 404 });
++      return new Response(JSON.stringify({ code: 0, stdout: "", stderr: "", timedOut: false }));
++    };
++    // This is the same configuration handoff used by buildLocal in wiring.ts.
++    const sandbox = createLocalSandbox(createLocalWorkspaceStore(directory), {
++      ...config.localSandbox, dockerExec: docker.dockerExec, fetchImpl, repoRoot: directory,
++    });
++    const layers = [{ scopeId: "group:web-project-config-test", mountPath: "", mode: "rw" as const }];
++    const first = await sandbox.provision(layers);
++    assert.ok(requested.some(url => url.pathname === "/exec"), "provision reaches the daemon preparation call");
++    assert.ok(requested.every(url => url.hostname === (containerized ? first.id : "127.0.0.1")));
++    assert.ok(requested.every(url => url.port === (containerized ? "8080" : "32123")));
++    const connection = `${localNetworkName(first.id)}|qm-test-core`;
++    assert.equal(docker.connections.has(connection), containerized);
++    if (containerized) {
++      docker.connections.delete(connection);
++      const second = await sandbox.provision(layers);
++      assert.equal(second.id, first.id, "existing resident sandbox is reused");
++      assert.equal(docker.connections.has(connection), true, "replacement core reattaches without recreating the sandbox");
++      await sandbox.teardown(second);
++    }
++    await sandbox.teardown(first, { destroy: true });
++  });
++}

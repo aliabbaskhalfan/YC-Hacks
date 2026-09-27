@@ -10,6 +10,10 @@ web/dist/
 # Secrets / local env
 .env
 .env.local
+.env.bak.*
+
+# Recreated by deploy/qm-local/bootstrap.sh from pinned QM + reviewed patches.
+deploy/qm-source-0.1.12/
 
 # Superset workspace-local state
 .superset/.ports.env
@@ -21,9 +25,13 @@ data/synthetic/*
 !data/synthetic/README.md
 data/brain/*
 !data/brain/README.md
+data/clips/
+data/memory/
+data/runtime/
 
 # Third-party assets fetched at setup time (see sim/fetch_menagerie.sh)
 third_party/
 
 # OS
 .DS_Store
+.generated/

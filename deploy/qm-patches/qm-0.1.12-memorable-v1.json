@@ -1,0 +1,91 @@
+{
+  "schema": "memorable.qm-patch.v1",
+  "upstream": "https://github.com/yc-software/qm",
+  "tag": "v0.1.12",
+  "patch": "qm-0.1.12-memorable-v1.patch",
+  "patch_sha256": "cd2fdea442895699ec945c0f747534056ab511703b53226bd545f51d968ce7f6",
+  "requires_cli": "0.5.31-shared-env.1",
+  "scope": "Native procedural memory only; no Anthropic workspace headers, model changes, deployment CLI changes, or sandbox transport changes.",
+  "files": [
+    {
+      "path": "src/core/orchestrator.ts",
+      "baseline_sha256": "cf3de48340161d844236247f789ff5f9ce87eee4d0892064ca50b0550ca347c1",
+      "patched_sha256": "883ea10c898fc76139bc6e396967b8bd55094829db3cf914c78aaca5d9251536"
+    },
+    {
+      "path": "src/memory/memorable/config.ts",
+      "baseline_sha256": "9df990c38475ebb62ea02979ac40d0990d561c0c19435f5b1acb5b8f5c7af64c",
+      "patched_sha256": "76f9d298ba78cc14c15a1e880281f9c2b5ead6a4145f6e883fdec4fcd106f247"
+    },
+    {
+      "path": "src/memory/memorable/inject.ts",
+      "baseline_sha256": "b4cc779cf5082880187fbf0eed446857f53d46c64a095effabb730ff9e6f5449",
+      "patched_sha256": "dee89ae50822143d6a2f9a13435ff09227ce31ff2688a49ed4718fa595eab20d"
+    },
+    {
+      "path": "src/memory/memorable/provider.ts",
+      "baseline_sha256": "6501d1ff656615e1d6d24fd8657ded76d39dc0bc2dd1d9aae00b8ecbf3cf7463",
+      "patched_sha256": "45f22231a9050cd6ab6bcdae0fe564b6f4b3278ee84d8d2f33f2b0f7efab3bf5"
+    },
+    {
+      "path": "src/memory/memorable/relay.ts",
+      "baseline_sha256": "69f6b5c92b2ef6d462d24731f6a25777d2ecbf96859c453fd79d4e27674892df",
+      "patched_sha256": "c2ff29e0df575fcde6744bafee40b6321e97d18eb43a0e86452dad9af5e36b9d"
+    },
+    {
+      "path": "src/memory/memory-service.ts",
+      "baseline_sha256": "d15b7fc9d2f91bcbdd8b24c0e92d9a8bec0fe71fc8dd348c82e03cc658532033",
+      "patched_sha256": "bdbc144f00d7ffff419553095a84f813cfead3fe6f092b6721872f9a415722fb"
+    },
+    {
+      "path": "src/memory/provider-router.ts",
+      "baseline_sha256": "13d005a80fa29cec09d3e54e2a9bf4c5662c732c2c7229e0c5e9d3a45a0d4953",
+      "patched_sha256": "4fad50ca05dc86c572c51c4547debb057d4dd65658d5cd47a5caa2727a5ece71"
+    },
+    {
+      "path": "src/memory/strategies/per-turn.ts",
+      "baseline_sha256": "46291954bc7366ccbbe4a2593f0d0d898747c3030c8f2f2cd4a536a5a3aa6555",
+      "patched_sha256": "d4fdd294824967ac9c1438b73c393a657ee8575153bd51850e644147b6b85240"
+    },
+    {
+      "path": "src/memory/strategy.ts",
+      "baseline_sha256": "cf8997d6d0e44114a198c355719e10db8bea246824cbf026c5632fe47b371362",
+      "patched_sha256": "eaae98e64237b8a1d67c7d6414b33ab600f3c295c38c0742a3c8046736542d0e"
+    },
+    {
+      "path": "src/resolution/turn-context.ts",
+      "baseline_sha256": "113b3425dc88f5fe6ac89a2ef3c0bc0e0c2dd39635b53e7f3530a75be204eef1",
+      "patched_sha256": "dd55d3f3d92f4daaa63b8fb3a56e755ea216c273564b3ab581274b7708236c26"
+    },
+    {
+      "path": "test/memorable-inject.test.ts",
+      "baseline_sha256": "653cd5791f82be35428724b25bf8af0540ff9f9344f2a07b3c5b1a9df4b316a8",
+      "patched_sha256": "970654acc84f3959e24e79753036a21ccdc3b7c0663e6ccdab5859031cb2c57c"
+    },
+    {
+      "path": "test/memorable-native-turn.test.ts",
+      "baseline_sha256": null,
+      "patched_sha256": "6461bd4ba15f98a7462a03f730eaea36304a59f02c38f58b654d8fed85961ecc"
+    },
+    {
+      "path": "test/memorable-provider.test.ts",
+      "baseline_sha256": "63dccc12721f2b7b016bd6c0199b8532a1f4acb9d98b6dd147bf24b9c481e606",
+      "patched_sha256": "a26891fb64f1806e351106cd8812daaacddeea8466b1cc5ea8d6f1e5a2bc9da8"
+    },
+    {
+      "path": "test/memorable-relay.test.ts",
+      "baseline_sha256": "0fac0334c9aa829fc8512a2255a3600f479278bdde3deade3e9c3a4c7fc2c404",
+      "patched_sha256": "1b7d4f6d1704fda9788d70a3d69af61b8f3b3157993d796edccfce1257a4b8a7"
+    },
+    {
+      "path": "test/memory-capture-async.test.ts",
+      "baseline_sha256": "2a22b15e4d42849314712ae410be52e2ca82f589b7dba2c28f81565a82b09d2f",
+      "patched_sha256": "2155febbd1e7f6781f8eea0f872b012ed8fc88aa4fe5318fbbe3cb0dd758d859"
+    },
+    {
+      "path": "test/memory-provider-config.test.ts",
+      "baseline_sha256": "546e04a810a3c1f1ad89eaa5a13473e23c9f1ef1d3044be97e79c53f344b8ccb",
+      "patched_sha256": "56ca9725c2c947e49afe82be83c2bbcd02cba847ce4a6cd711607913b16ff7b6"
+    }
+  ]
+}
