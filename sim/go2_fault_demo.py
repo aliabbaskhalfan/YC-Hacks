@@ -11,8 +11,9 @@ Setup (from the repo root):
 Run:
   mjpython sim/go2_fault_demo.py --unit go2-02         (macOS viewer; Tab / Shift+Tab bring the side panels back)
   python sim/go2_fault_demo.py --headless sim/out/     (no window: writes walk.mp4 and key-frame PNGs)
+  python sim/go2_fault_demo.py --export-replays web/public/replays   (pose replays for the three.js viewer)
 """
-import argparse, subprocess, time
+import argparse, json, subprocess, time
 from pathlib import Path
 import numpy as np
 import mujoco
@@ -30,6 +31,7 @@ p.add_argument("--scene", default=str(Path(__file__).resolve().parent.parent / "
                                          / "unitree_go2" / "scene_datacenter.xml"))
 p.add_argument("--headless", metavar="DIR", help="render to DIR instead of opening the viewer")
 p.add_argument("--duration", type=float, default=12.0)            # headless only
+p.add_argument("--export-replays", metavar="DIR", help="write pose replays for the web viewer to DIR and exit")
 args = p.parse_args()
 
 m = mujoco.MjModel.from_xml_path(args.scene)
@@ -46,6 +48,7 @@ is_position = m.actuator_biastype == mujoco.mjtBias.mjBIAS_AFFINE
 KP, KD = 80.0, 3.0  # only used if actuators are raw torque motors
 
 STAND = d.qpos[qadr].copy()
+STAND_Z = float(d.qpos[2])
 idx = {n: i for i, n in enumerate(names)}
 
 # Open-loop trot: diagonal pairs (FR+RL, FL+RR) half a stride apart.
@@ -178,6 +181,121 @@ def chase_camera(cam):
     cam.type = mujoco.mjtCamera.mjCAMERA_TRACKING
     cam.trackbodyid = m.body("base").id
     cam.distance, cam.azimuth, cam.elevation = 2.2, 0.0, -12.0  # behind the dog, looking down the aisle (+x)
+
+BODY_NAMES = ["base"] + [f"{leg}_{seg}" for leg in ("FL", "FR", "RL", "RR") for seg in ("hip", "thigh", "calf")]
+BODY_IDS = [m.body(n).id for n in BODY_NAMES]
+REPLAY_FPS = 30
+
+def pose_frame(data, t, shift):
+    return {"t": round(t, 4), "bodies": {
+        n: {"p": [round(float(v), 5) for v in data.xpos[b] + shift], "q": [round(float(v), 5) for v in data.xquat[b]]}
+        for n, b in zip(BODY_NAMES, BODY_IDS)}}
+
+def write_replay(path, frames, loop, note, **extra):
+    t0 = frames[0]["t"]
+    for fr in frames:
+        fr["t"] = round(fr["t"] - t0, 4)
+    period = round(frames[-1]["t"] + 1.0 / REPLAY_FPS, 4)
+    path.write_text(json.dumps({"fps": REPLAY_FPS, "period": period, "loop": loop, "note": note, **extra, "frames": frames}))
+    print(f"[replay] {path}  {len(frames)} frames, {period:.2f} s")
+
+def export_replays(out):
+    """Walk loop, trip-and-fall, stand-up and a fallen still, shifted so the fall lands near the viewer origin."""
+    WALK_T0, WALK_T1, FALL_T0, FALL_T1 = 3.0, 3.0 + T_GAIT, 3.0, 9.5
+    samples, trip_t, impact = [], None, None
+    next_t = 0.0
+    while d.time < FALL_T1:
+        step()
+        if trip_t is None and shove_start is not None:
+            trip_t = shove_start
+        if impact is None and fired:
+            impact = (d.time, peak_impact, d.xpos[BASE].copy())
+        if d.time >= next_t:
+            samples.append((d.time, d.xpos.copy(), d.xquat.copy(), d.qpos.copy()))
+            next_t += 1.0 / REPLAY_FPS
+    assert impact, "no cover impact in the export run"
+    shift = np.array([-impact[2][0], -impact[2][1] / 2, 0.0])
+    view = mujoco.MjData(m)
+
+    def frame_from(t, xpos, xquat):
+        view.xpos[:], view.xquat[:] = xpos, xquat
+        return pose_frame(view, t, shift)
+
+    fall = [frame_from(t, xp, xq) for t, xp, xq, _ in samples if FALL_T0 <= t <= FALL_T1]
+    export_scene(out.parent / "scenes" / "datacenter.json", shift)
+    write_replay(out / "go2-02_trip_fall.json", fall, False, "go2-02 walks the aisle, steps on a toolbox, falls on its right side (MuJoCo sim)",
+                 events=[{"t": round(trip_t - FALL_T0, 3), "type": "trip"},
+                         {"t": round(impact[0] - FALL_T0, 3), "type": "impact", "part_id": "fr.thigh.cover",
+                          "force_n": round(float(impact[1]), 1)}])
+
+    # Walk in place at the fall's starting spot: remove the forward progress over one stride.
+    walk = [s for s in samples if WALK_T0 <= s[0] < WALK_T1]
+    v = (walk[-1][1][BASE] - walk[0][1][BASE]) / (walk[-1][0] - walk[0][0])
+    loop = []
+    for t, xp, xq, _ in walk:
+        drift = v * (t - walk[0][0])
+        drift[2] = 0.0
+        loop.append(frame_from(t, xp - drift, xq))
+    write_replay(out / "go2_walk_loop.json", loop, True, "one trot stride in place (MuJoCo sim)")
+
+    last_q = samples[-1][3]
+    write_replay(out / "go2_fallen_right.json", [frame_from(0.0, samples[-1][1], samples[-1][2])], False,
+                 "Go2 lying on its right side after a fall (MuJoCo sim)")
+
+    # Stand-up: interpolate the joints and root from the fallen pose to the stand keyframe, then run kinematics.
+    stand_q = last_q.copy()
+    stand_q[2] = STAND_Z
+    stand_q[3:7] = [1, 0, 0, 0]
+    stand_q[qadr] = STAND
+    up = []
+    for i in range(int(1.6 * REPLAY_FPS) + 1):
+        a = i / (1.6 * REPLAY_FPS)
+        a = a * a * (3 - 2 * a)
+        view.qpos[:] = last_q + (stand_q - last_q) * a
+        view.qpos[3:7] = slerp(last_q[3:7], stand_q[3:7], a)
+        mujoco.mj_kinematics(m, view)
+        up.append(pose_frame(view, i / REPLAY_FPS, shift))
+    write_replay(out / "go2-02_stand_up.json", up, False, "go2-02 back on its feet after the fix (kinematic, not simulated)")
+    write_replay(out / "go2_standing.json", [dict(up[-1], t=0.0)], False, "Go2 standing still, same spot as the stand-up's end")
+
+def export_scene(path, shift):
+    """Static world geoms (racks, trays, lights, toolbox...) for the web viewer, in the replays' shifted frame."""
+    geoms = {"box": [], "cylinder": [], "sphere": []}
+    kinds = {int(mujoco.mjtGeom.mjGEOM_BOX): "box", int(mujoco.mjtGeom.mjGEOM_CYLINDER): "cylinder", int(mujoco.mjtGeom.mjGEOM_SPHERE): "sphere"}
+    quat = np.zeros(4)
+    for g in range(m.ngeom):
+        kind = kinds.get(int(m.geom_type[g]))
+        if m.geom_bodyid[g] != 0 or kind is None:
+            continue
+        mid = m.geom_matid[g]
+        rgba = m.mat_rgba[mid] if mid >= 0 else m.geom_rgba[g]
+        emission = float(m.mat_emission[mid]) if mid >= 0 else 0.0
+        mujoco.mju_mat2Quat(quat, d.geom_xmat[g])
+        row = [*(d.geom_xpos[g] + shift), *m.geom_size[g], *quat, *rgba, emission]
+        geoms[kind].append([round(float(v), 4) for v in row])
+    fmid = m.geom_matid[FLOOR]
+    floor = {"rgb1": [0.87, 0.88, 0.89], "rgb2": [0.85, 0.86, 0.87], "mark": [0.7, 0.71, 0.73], "tile_m": 0.6,
+             "reflectance": float(m.mat_reflectance[fmid]) if fmid >= 0 else 0.0}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"note": "data center aisle from scene_datacenter.xml; rows are pos3 size3 quat4(wxyz) rgba4 emission",
+                                "shift": [round(float(v), 4) for v in shift], "floor": floor, "geoms": geoms}))
+    print(f"[scene] {path}  " + ", ".join(f"{len(v)} {k}" for k, v in geoms.items()))
+
+def slerp(q0, q1, a):
+    q0, q1 = np.asarray(q0, float), np.asarray(q1, float)
+    dot = float(np.dot(q0, q1))
+    if dot < 0:
+        q1, dot = -q1, -dot
+    if dot > 0.9995:
+        q = q0 + a * (q1 - q0)
+        return q / np.linalg.norm(q)
+    th = np.arccos(dot)
+    return (np.sin((1 - a) * th) * q0 + np.sin(a * th) * q1) / np.sin(th)
+
+if args.export_replays:
+    out = Path(args.export_replays); out.mkdir(parents=True, exist_ok=True)
+    export_replays(out)
+    raise SystemExit
 
 if args.headless:
     out = Path(args.headless); out.mkdir(parents=True, exist_ok=True)

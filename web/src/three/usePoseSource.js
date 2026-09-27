@@ -10,11 +10,33 @@ const RECONNECT_DELAY_MS = 3000;
  * ref rather than React state: Go2Rig reads it inside its own useFrame, so
  * a 30-60Hz pose update never triggers a React re-render.
  */
-export function usePoseSource({ wsUrl, replayUrl, onAlert }) {
+const replayCache = new Map();
+
+// Fetch (once) and cache a replay, so switching between replays mid-demo never waits on the network.
+export function loadReplay(url) {
+  if (!replayCache.has(url)) {
+    replayCache.set(url, fetch(url).then((r) => r.json()).catch((err) => {
+      replayCache.delete(url);
+      throw err;
+    }));
+  }
+  return replayCache.get(url);
+}
+
+/**
+ * `replayUrl` / `playKey`: changing either restarts playback from t=0.
+ * Replays with `loop: false` play once and hold their last frame; their
+ * `events` ([{t, type, ...}]) fire `onReplayEvent` once per play, and their
+ * `props` (e.g. a toolbox) are returned for the viewer to draw.
+ */
+export function usePoseSource({ wsUrl, replayUrl, onAlert, onReplayEvent, playKey = 0 }) {
   const poseRef = useRef({ bodies: null });
   const [source, setSource] = useState("connecting");
+  const [props, setProps] = useState([]);
   const replay = useRef(null);
   const lastAlertKey = useRef(null);
+  const onEventRef = useRef(onReplayEvent);
+  onEventRef.current = onReplayEvent;
 
   const fireAlert = (alert) => {
     const key = alert ? JSON.stringify(alert) : null;
@@ -24,32 +46,37 @@ export function usePoseSource({ wsUrl, replayUrl, onAlert }) {
     }
   };
 
-  // ---- replay fallback: fetched once, looped by wall-clock time ----
+  // ---- replay fallback: cached fetch; the previous pose stays up until the new replay is ready ----
   useEffect(() => {
     let cancelled = false;
-    fetch(replayUrl)
-      .then((r) => r.json())
+    replay.current = null;
+    loadReplay(replayUrl)
       .then((data) => {
-        if (!cancelled) replay.current = data;
+        if (cancelled) return;
+        replay.current = { ...data, start: performance.now(), fired: new Set() };
+        setProps(data.props ?? []);
       })
       .catch((err) => console.warn("usePoseSource: replay load failed", err));
     return () => {
       cancelled = true;
     };
-  }, [replayUrl]);
+  }, [replayUrl, playKey]);
 
   useEffect(() => {
     let raf;
-    const start = performance.now();
     const tick = () => {
-      if (source !== "live" && replay.current) {
-        const { frames, period } = replay.current;
-        const elapsed = ((performance.now() - start) / 1000) % period;
-        const idx = Math.min(
-          frames.length - 1,
-          Math.floor((elapsed / period) * frames.length)
-        );
-        poseRef.current = { bodies: frames[idx].bodies };
+      const r = replay.current;
+      if (source !== "live" && r) {
+        const raw = (performance.now() - r.start) / 1000;
+        const elapsed = r.loop === false ? Math.min(raw, r.period) : raw % r.period;
+        const idx = Math.min(r.frames.length - 1, Math.floor((elapsed / r.period) * r.frames.length));
+        poseRef.current = { bodies: r.frames[idx].bodies };
+        for (const ev of r.events ?? []) {
+          if (raw >= ev.t && !r.fired.has(ev)) {
+            r.fired.add(ev);
+            onEventRef.current?.(ev);
+          }
+        }
       }
       raf = requestAnimationFrame(tick);
     };
@@ -97,5 +124,5 @@ export function usePoseSource({ wsUrl, replayUrl, onAlert }) {
     };
   }, [wsUrl]);
 
-  return useMemo(() => ({ poseRef, source }), [poseRef, source]);
+  return useMemo(() => ({ poseRef, source, props }), [poseRef, source, props]);
 }

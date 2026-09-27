@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF, Html } from "@react-three/drei";
 import * as THREE from "three";
@@ -34,8 +34,18 @@ export default function Go2Rig({
   alertText,
   selectedBody,
   onSelectBody,
+  labels = true,
 }) {
-  const { nodes } = useGLTF("/go2.glb");
+  // Each rig gets its own copy: useGLTF caches one scene, and a three.js object can only live in one
+  // scene at a time, so two viewers (ops + phone) sharing nodes would steal the dog from each other.
+  const { scene } = useGLTF("/go2.glb");
+  const nodes = useMemo(() => {
+    const byName = {};
+    scene.clone(true).traverse((o) => {
+      if (o.name) byName[o.name] = o;
+    });
+    return byName;
+  }, [scene]);
   const flashStart = useRef(null);
   const baseColors = useRef({});
 
@@ -113,8 +123,8 @@ export default function Go2Rig({
       {BODY_NAMES.map((name) => {
         const mesh = nodes[name];
         if (!mesh) return null;
-        const showAlertBadge = name === alertBody && (status === "red" || status === "in_repair");
-        const showSelectBadge = name === selectedBody && name !== alertBody;
+        const showAlertBadge = labels && name === alertBody && (status === "red" || status === "in_repair");
+        const showSelectBadge = labels && name === selectedBody && name !== alertBody;
         return (
           <primitive
             key={name}
