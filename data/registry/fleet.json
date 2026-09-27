@@ -1,0 +1,876 @@
+{
+  "sites": [
+    {
+      "site_id": "austin-refinery",
+      "ambient_class": "hot",
+      "region": "TX"
+    },
+    {
+      "site_id": "phoenix-solar",
+      "ambient_class": "hot",
+      "region": "AZ"
+    },
+    {
+      "site_id": "houston-port",
+      "ambient_class": "hot",
+      "region": "TX"
+    },
+    {
+      "site_id": "pittsburgh-plant",
+      "ambient_class": "temperate",
+      "region": "PA"
+    },
+    {
+      "site_id": "denver-dc",
+      "ambient_class": "temperate",
+      "region": "CO"
+    },
+    {
+      "site_id": "sf-lab",
+      "ambient_class": "temperate",
+      "region": "CA"
+    }
+  ],
+  "units": [
+    {
+      "unit_id": "go2-01",
+      "site": "phoenix-solar",
+      "ambient_class": "hot",
+      "commissioned_at": "2024-11-03",
+      "usage_factor": 1.24,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-02",
+      "site": "sf-lab",
+      "ambient_class": "temperate",
+      "commissioned_at": "2026-03-30",
+      "usage_factor": 1.121,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-03",
+      "site": "austin-refinery",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-09-23",
+      "usage_factor": 0.799,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-04",
+      "site": "houston-port",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-12-13",
+      "usage_factor": 1.204,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-05",
+      "site": "houston-port",
+      "ambient_class": "hot",
+      "commissioned_at": "2024-09-29",
+      "usage_factor": 1.048,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-06",
+      "site": "austin-refinery",
+      "ambient_class": "hot",
+      "commissioned_at": "2024-10-16",
+      "usage_factor": 1.346,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-07",
+      "site": "denver-dc",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-01-10",
+      "usage_factor": 0.785,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-08",
+      "site": "houston-port",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-08-19",
+      "usage_factor": 1.28,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-09",
+      "site": "austin-refinery",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-12-27",
+      "usage_factor": 0.889,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-10",
+      "site": "austin-refinery",
+      "ambient_class": "hot",
+      "commissioned_at": "2024-10-28",
+      "usage_factor": 0.941,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-11",
+      "site": "sf-lab",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-04-18",
+      "usage_factor": 0.989,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-12",
+      "site": "phoenix-solar",
+      "ambient_class": "hot",
+      "commissioned_at": "2026-04-07",
+      "usage_factor": 0.811,
+      "supplier_lot": {
+        "fl.hip.motor": "C",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-13",
+      "site": "denver-dc",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-09-14",
+      "usage_factor": 1.323,
+      "supplier_lot": {
+        "fl.hip.motor": "C",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-14",
+      "site": "austin-refinery",
+      "ambient_class": "hot",
+      "commissioned_at": "2026-02-15",
+      "usage_factor": 1.2,
+      "supplier_lot": {
+        "fl.hip.motor": "C",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-15",
+      "site": "sf-lab",
+      "ambient_class": "temperate",
+      "commissioned_at": "2024-11-20",
+      "usage_factor": 1.298,
+      "supplier_lot": {
+        "fl.hip.motor": "C",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-16",
+      "site": "houston-port",
+      "ambient_class": "hot",
+      "commissioned_at": "2024-11-22",
+      "usage_factor": 1.217,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-17",
+      "site": "pittsburgh-plant",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-05-31",
+      "usage_factor": 1.189,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-18",
+      "site": "denver-dc",
+      "ambient_class": "temperate",
+      "commissioned_at": "2026-03-09",
+      "usage_factor": 0.882,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-19",
+      "site": "pittsburgh-plant",
+      "ambient_class": "temperate",
+      "commissioned_at": "2026-03-05",
+      "usage_factor": 1.251,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-20",
+      "site": "pittsburgh-plant",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-02-10",
+      "usage_factor": 0.991,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-21",
+      "site": "houston-port",
+      "ambient_class": "hot",
+      "commissioned_at": "2024-09-27",
+      "usage_factor": 1.338,
+      "supplier_lot": {
+        "fl.hip.motor": "C",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-22",
+      "site": "denver-dc",
+      "ambient_class": "temperate",
+      "commissioned_at": "2026-01-08",
+      "usage_factor": 1.01,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-23",
+      "site": "phoenix-solar",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-03-27",
+      "usage_factor": 1.251,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-24",
+      "site": "pittsburgh-plant",
+      "ambient_class": "temperate",
+      "commissioned_at": "2024-12-10",
+      "usage_factor": 1.056,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-25",
+      "site": "sf-lab",
+      "ambient_class": "temperate",
+      "commissioned_at": "2026-03-28",
+      "usage_factor": 0.946,
+      "supplier_lot": {
+        "fl.hip.motor": "C",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-26",
+      "site": "austin-refinery",
+      "ambient_class": "hot",
+      "commissioned_at": "2024-12-27",
+      "usage_factor": 1.021,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-27",
+      "site": "phoenix-solar",
+      "ambient_class": "hot",
+      "commissioned_at": "2024-12-26",
+      "usage_factor": 1.07,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-28",
+      "site": "phoenix-solar",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-04-24",
+      "usage_factor": 1.015,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-29",
+      "site": "denver-dc",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-05-21",
+      "usage_factor": 0.836,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-30",
+      "site": "houston-port",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-03-15",
+      "usage_factor": 1.346,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-31",
+      "site": "denver-dc",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-02-15",
+      "usage_factor": 1.014,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "B",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-32",
+      "site": "sf-lab",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-09-01",
+      "usage_factor": 0.913,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "A",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-33",
+      "site": "pittsburgh-plant",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-06-30",
+      "usage_factor": 0.804,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "C",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "B",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-34",
+      "site": "phoenix-solar",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-10-15",
+      "usage_factor": 0.79,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "C",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-35",
+      "site": "sf-lab",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-09-28",
+      "usage_factor": 1.313,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "A",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "B"
+      }
+    },
+    {
+      "unit_id": "go2-36",
+      "site": "phoenix-solar",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-01-03",
+      "usage_factor": 1.153,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "A",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "A",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "C",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-37",
+      "site": "phoenix-solar",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-01-29",
+      "usage_factor": 0.897,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "B",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "C"
+      }
+    },
+    {
+      "unit_id": "go2-38",
+      "site": "pittsburgh-plant",
+      "ambient_class": "temperate",
+      "commissioned_at": "2025-10-22",
+      "usage_factor": 1.339,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "C",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "A",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "A",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-39",
+      "site": "austin-refinery",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-09-11",
+      "usage_factor": 1.008,
+      "supplier_lot": {
+        "fl.hip.motor": "A",
+        "fl.thigh.motor": "A",
+        "fl.calf.motor": "C",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "C",
+        "fr.calf.motor": "C",
+        "rl.hip.motor": "B",
+        "rl.thigh.motor": "C",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "C",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "A"
+      }
+    },
+    {
+      "unit_id": "go2-40",
+      "site": "houston-port",
+      "ambient_class": "hot",
+      "commissioned_at": "2025-02-14",
+      "usage_factor": 0.861,
+      "supplier_lot": {
+        "fl.hip.motor": "B",
+        "fl.thigh.motor": "B",
+        "fl.calf.motor": "A",
+        "fr.hip.motor": "B",
+        "fr.thigh.motor": "B",
+        "fr.calf.motor": "B",
+        "rl.hip.motor": "C",
+        "rl.thigh.motor": "B",
+        "rl.calf.motor": "A",
+        "rr.hip.motor": "A",
+        "rr.thigh.motor": "B",
+        "rr.calf.motor": "A"
+      }
+    }
+  ]
+}

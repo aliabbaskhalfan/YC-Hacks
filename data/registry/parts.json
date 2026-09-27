@@ -1,0 +1,420 @@
+[
+  {
+    "part_id": "fl.hip.motor",
+    "name": "Front-left hip abduction actuator",
+    "kind": "motor",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_hip"
+    ],
+    "spec": "hip abduction actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "fl.thigh.motor",
+    "name": "Front-left thigh actuator",
+    "kind": "motor",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_thigh"
+    ],
+    "spec": "thigh joint actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "fl.calf.motor",
+    "name": "Front-left knee actuator",
+    "kind": "motor",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_calf"
+    ],
+    "spec": "knee joint actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "fl.thigh.link",
+    "name": "Front-left thigh link",
+    "kind": "link",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_thigh"
+    ],
+    "spec": "structural thigh link (sim value)"
+  },
+  {
+    "part_id": "fl.calf.link",
+    "name": "Front-left calf link",
+    "kind": "link",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_calf"
+    ],
+    "spec": "structural calf link (sim value)"
+  },
+  {
+    "part_id": "fl.foot.pad",
+    "name": "Front-left foot pad",
+    "kind": "wear_part",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_calf"
+    ],
+    "spec": "rubber foot pad (sim value)"
+  },
+  {
+    "part_id": "fl.hip.mount_bolts",
+    "name": "Front-left hip mount bolts",
+    "kind": "fastener",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_hip"
+    ],
+    "spec": "hip mount bolt set (sim value)"
+  },
+  {
+    "part_id": "fl.leg.harness",
+    "name": "Front-left leg cable harness",
+    "kind": "harness",
+    "parent": "fl.leg",
+    "mesh_nodes": [
+      "FL_hip",
+      "FL_thigh",
+      "FL_calf"
+    ],
+    "spec": "per-leg cable harness (sim value)"
+  },
+  {
+    "part_id": "fr.hip.motor",
+    "name": "Front-right hip abduction actuator",
+    "kind": "motor",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_hip"
+    ],
+    "spec": "hip abduction actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "fr.thigh.motor",
+    "name": "Front-right thigh actuator",
+    "kind": "motor",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_thigh"
+    ],
+    "spec": "thigh joint actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "fr.calf.motor",
+    "name": "Front-right knee actuator",
+    "kind": "motor",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_calf"
+    ],
+    "spec": "knee joint actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "fr.thigh.link",
+    "name": "Front-right thigh link",
+    "kind": "link",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_thigh"
+    ],
+    "spec": "structural thigh link (sim value)"
+  },
+  {
+    "part_id": "fr.calf.link",
+    "name": "Front-right calf link",
+    "kind": "link",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_calf"
+    ],
+    "spec": "structural calf link (sim value)"
+  },
+  {
+    "part_id": "fr.foot.pad",
+    "name": "Front-right foot pad",
+    "kind": "wear_part",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_calf"
+    ],
+    "spec": "rubber foot pad (sim value)"
+  },
+  {
+    "part_id": "fr.hip.mount_bolts",
+    "name": "Front-right hip mount bolts",
+    "kind": "fastener",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_hip"
+    ],
+    "spec": "hip mount bolt set (sim value)"
+  },
+  {
+    "part_id": "fr.leg.harness",
+    "name": "Front-right leg cable harness",
+    "kind": "harness",
+    "parent": "fr.leg",
+    "mesh_nodes": [
+      "FR_hip",
+      "FR_thigh",
+      "FR_calf"
+    ],
+    "spec": "per-leg cable harness (sim value)"
+  },
+  {
+    "part_id": "rl.hip.motor",
+    "name": "Rear-left hip abduction actuator",
+    "kind": "motor",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_hip"
+    ],
+    "spec": "hip abduction actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "rl.thigh.motor",
+    "name": "Rear-left thigh actuator",
+    "kind": "motor",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_thigh"
+    ],
+    "spec": "thigh joint actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "rl.calf.motor",
+    "name": "Rear-left knee actuator",
+    "kind": "motor",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_calf"
+    ],
+    "spec": "knee joint actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "rl.thigh.link",
+    "name": "Rear-left thigh link",
+    "kind": "link",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_thigh"
+    ],
+    "spec": "structural thigh link (sim value)"
+  },
+  {
+    "part_id": "rl.calf.link",
+    "name": "Rear-left calf link",
+    "kind": "link",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_calf"
+    ],
+    "spec": "structural calf link (sim value)"
+  },
+  {
+    "part_id": "rl.foot.pad",
+    "name": "Rear-left foot pad",
+    "kind": "wear_part",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_calf"
+    ],
+    "spec": "rubber foot pad (sim value)"
+  },
+  {
+    "part_id": "rl.hip.mount_bolts",
+    "name": "Rear-left hip mount bolts",
+    "kind": "fastener",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_hip"
+    ],
+    "spec": "hip mount bolt set (sim value)"
+  },
+  {
+    "part_id": "rl.leg.harness",
+    "name": "Rear-left leg cable harness",
+    "kind": "harness",
+    "parent": "rl.leg",
+    "mesh_nodes": [
+      "RL_hip",
+      "RL_thigh",
+      "RL_calf"
+    ],
+    "spec": "per-leg cable harness (sim value)"
+  },
+  {
+    "part_id": "rr.hip.motor",
+    "name": "Rear-right hip abduction actuator",
+    "kind": "motor",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_hip"
+    ],
+    "spec": "hip abduction actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "rr.thigh.motor",
+    "name": "Rear-right thigh actuator",
+    "kind": "motor",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_thigh"
+    ],
+    "spec": "thigh joint actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "rr.calf.motor",
+    "name": "Rear-right knee actuator",
+    "kind": "motor",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_calf"
+    ],
+    "spec": "knee joint actuator (sim value)",
+    "supplier_lots": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "part_id": "rr.thigh.link",
+    "name": "Rear-right thigh link",
+    "kind": "link",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_thigh"
+    ],
+    "spec": "structural thigh link (sim value)"
+  },
+  {
+    "part_id": "rr.calf.link",
+    "name": "Rear-right calf link",
+    "kind": "link",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_calf"
+    ],
+    "spec": "structural calf link (sim value)"
+  },
+  {
+    "part_id": "rr.foot.pad",
+    "name": "Rear-right foot pad",
+    "kind": "wear_part",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_calf"
+    ],
+    "spec": "rubber foot pad (sim value)"
+  },
+  {
+    "part_id": "rr.hip.mount_bolts",
+    "name": "Rear-right hip mount bolts",
+    "kind": "fastener",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_hip"
+    ],
+    "spec": "hip mount bolt set (sim value)"
+  },
+  {
+    "part_id": "rr.leg.harness",
+    "name": "Rear-right leg cable harness",
+    "kind": "harness",
+    "parent": "rr.leg",
+    "mesh_nodes": [
+      "RR_hip",
+      "RR_thigh",
+      "RR_calf"
+    ],
+    "spec": "per-leg cable harness (sim value)"
+  },
+  {
+    "part_id": "base.battery",
+    "name": "Battery pack",
+    "kind": "battery",
+    "parent": "base",
+    "mesh_nodes": [
+      "base"
+    ],
+    "spec": "main battery pack (sim value)"
+  },
+  {
+    "part_id": "base.imu",
+    "name": "IMU",
+    "kind": "sensor",
+    "parent": "base",
+    "mesh_nodes": [
+      "base"
+    ],
+    "spec": "body inertial measurement unit (sim value)"
+  },
+  {
+    "part_id": "base.shell",
+    "name": "Body shell",
+    "kind": "shell",
+    "parent": "base",
+    "mesh_nodes": [
+      "base"
+    ],
+    "spec": "body shell (sim value)"
+  }
+]
