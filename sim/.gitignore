@@ -1,0 +1,5 @@
+mujoco_menagerie/
+out/
+.venv/
+__pycache__/
+*.log
