@@ -26,6 +26,8 @@ export async function submitFixNote({ workOrder, audio, text }) {
       form.set("unit_id", workOrder.unit_id);
       form.set("part_id", workOrder.part_id);
       form.set("procedure_id", "replace-thigh-cover");
+      form.set("step_id", "3"); // "Fit the new cover" in server/procedures/replace-thigh-cover.json
+      form.set("tech", "tech-01");
       if (audio) form.set("audio", audio, `${workOrder.incident_id}.webm`);
       if (text) form.set("text", text);
       const res = await post("/capture", form);
