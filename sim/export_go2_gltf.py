@@ -131,7 +131,8 @@ def export(menagerie_dir: Path, out_path: Path, preview_path: Path | None) -> No
         print(f"note: exporting extra bodies beyond Section 4.1: {sorted(extra)}")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    scene.export(str(out_path))
+    # Without include_normals trimesh writes no NORMAL attribute and three.js shades every face flat.
+    scene.export(str(out_path), include_normals=True)
     print(f"wrote {out_path}  ({len(exported_names)} body nodes)")
 
     if preview_path is not None:
